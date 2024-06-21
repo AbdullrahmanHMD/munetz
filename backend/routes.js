@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { dummyController } from './controllers.js';
+import { simpleController } from './controllers.js';
 const router = Router()
 
 // TODO: register routes
-router.get('/dummy', dummyController)
+router.post('/simple', simpleController)
 
 export default router;
