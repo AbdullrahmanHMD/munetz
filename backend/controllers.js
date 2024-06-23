@@ -1,13 +1,12 @@
 import OpenAI from "openai"
-import { exec as execCb } from 'child_process';
-import { promisify } from 'util';
+import { exec as execCb } from "child_process"
+import { promisify } from "util"
 
 import dotenv from "dotenv"
 dotenv.config()
 
-const exec = promisify(execCb);
+const exec = promisify(execCb)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 
 const simpleController = async (req, res) => {
     const { prompt } = req.body
@@ -18,37 +17,65 @@ const simpleController = async (req, res) => {
         })
         const answer = completion.choices[0].message.content
         res.status(200).json({ answer })
-    } catch(e) {
-        res.status(e.status || 500).json({error: e.message})
+    } catch (e) {
+        res.status(e.status || 500).json({ error: e.message })
     }
 }
 
 const summarizeController = async (req, res) => {
     const pdf = req.file
-    const prompt = req.body.prompt || ""
     if (!pdf) {
-        return res.status(400).json({message: 'No file uploaded'});
+        return res.status(400).json({ message: "No file uploaded" })
     }
     const runScript = async () => {
-        const command = `python ./scripts/my_script.py ${pdf.originalname} ${pdf.path} ${prompt}`;
-        const { stdout, stderr } = await exec(command);
-            if (stderr) {
-                throw new Error(stderr)
-            }
-            console.log(`stdout: ${stdout}`);
-            return stdout;
+        const command = `python ./scripts/summarize.py ${pdf.originalname} ${pdf.path}`
+        const { stdout, stderr } = await exec(command)
+        if (stderr) {
+            throw new Error(stderr)
+        }
+        console.log(`stdout: ${stdout}`)
+        return stdout
     }
 
     try {
         const scriptResult = await runScript()
-        res.status(200).json({result: scriptResult})
+        res.status(200).json({ result: scriptResult })
     } catch (e) {
         console.error(e.message)
-        res.status(500).json({error: e.message})
+        res.status(500).json({ error: e.message })
     } finally {
-        execCb('rm -f ./uploads/originalDoc.pdf') // TODO: read path from config
+        execCb("rm -f ./uploads/originalDoc.pdf") // TODO: read path from config
     }
-
 }
 
-export { simpleController, summarizeController }
+const findInfoController = async (req, res) => {
+    const pdf = req.file
+    const prompt = req.body.prompt
+    if (!pdf) {
+        return res.status(400).json({ message: "No file uploaded" })
+    }
+    if (!prompt || !prompt.length) {
+        return res.status(400).json({ message: "No prompt entered" })
+    }
+    const runScript = async () => {
+        const command = `python ./scripts/find_info.py ${pdf.originalname} ${pdf.path} ${prompt}`
+        const { stdout, stderr } = await exec(command)
+        if (stderr) {
+            throw new Error(stderr)
+        }
+        console.log(`stdout: ${stdout}`)
+        return stdout
+    }
+
+    try {
+        const scriptResult = await runScript()
+        res.status(200).json({ result: scriptResult })
+    } catch (e) {
+        console.error(e.message)
+        res.status(500).json({ error: e.message })
+    } finally {
+        execCb("rm -f ./uploads/originalDoc.pdf") // TODO: read path from config
+    }
+}
+
+export { simpleController, summarizeController, findInfoController }
