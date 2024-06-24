@@ -1,0 +1,10 @@
+doc_to_summarize : article_2.pdf
+
+model_config:
+  # model_path : Falconsai/text_summarization
+  model_path : Azma-AI/bart-large-text-summarizer
+  # model_path : KingNish/Real-Time-Chat-with-AI
+  kwargs:
+    max_length : 300
+    min_length : 100
+    # do_sample : false
