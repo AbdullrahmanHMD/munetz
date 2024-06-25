@@ -50,25 +50,16 @@ class Scraping:
 
         doc_locator = locate_with(By.PARTIAL_LINK_TEXT, ".pdf").below(rows[-1])
         docs = self.driver.find_elements(doc_locator)
-        with ZipFile(f'{os.getcwd()}/temp/output.zip', 'w') as myzip:
-            for doc in docs:
-                print(doc.text)
-                try:
-                    doc.click()
-                except ElementClickInterceptedException:
-                    print(f"Skipped file {doc.text}")
-                    continue
-                time.sleep(3)
-                myzip.write(f'{os.getcwd()}/temp/{doc.text}', arcname=doc.text)
-                os.remove(f'{os.getcwd()}/temp/{doc.text}')
-        return details
+        links = [(doc.text, doc.get_attribute('href')) for doc in docs]
+        return details, links
 
-#TODO scrape html file as well
+# TODO scrape html file as well
 
 
 if __name__ == "__main__":
     scraping = Scraping()
     scraping.setup_driver()
-    details = scraping.get_page("https://risi.muenchen.de/risi/antrag/detail/6261018?dokument=v6486171")
-    print(details)
+    details, links = scraping.get_page("https://risi.muenchen.de/risi/antrag/detail/6261018?dokument=v6486171")
     scraping.shutdown_driver()
+    print(details)
+    print(links)

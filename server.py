@@ -1,14 +1,30 @@
 import base64
-import json
 import os
+from zipfile import ZipFile
+
+import requests
 
 from flask import Flask, Response
 from flask_restful import Resource, Api, reqparse, inputs
+from pathlib import Path
 
 from scraping import Scraping
 
 app = Flask(__name__)
 api = Api(app)
+
+# Directory for storing downloaded files temporarily
+temp_dir = Path("./.tmp")
+
+
+def download(links):
+    temp_dir.mkdir(exist_ok=True)
+    with ZipFile(temp_dir / "output.zip", 'w') as myzip:
+        for filename, url in links:
+            file_data = requests.get(url).content
+            # TODO: add compression?
+            myzip.writestr(filename, file_data)
+
 
 class HelloWorld(Resource):
     def get(self):
@@ -35,13 +51,15 @@ class Scraper(Resource):
             return {"msg": "No valid URL"}, 400
         scraping = Scraping()
         scraping.setup_driver()
-        details = scraping.get_page(args['url'])
-        print(details)
+        details, links = scraping.get_page(url)
         scraping.shutdown_driver()
-        with open(f'{os.getcwd()}/temp/output.zip', 'rb') as zipfile:
+        print(details)
+        print(links)
+        download(links)
+        with open(temp_dir / "output.zip", 'rb') as zipfile:
             file_data = zipfile.read()
             file_encoded = base64.b64encode(file_data)
-        os.remove(f'{os.getcwd()}/temp/output.zip')
+        os.remove(temp_dir / "output.zip")
         return Response(file_encoded, mimetype='application/zip')
 
 
