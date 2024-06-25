@@ -2,6 +2,7 @@ import os
 import time
 
 from selenium import webdriver
+from selenium.common import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from pathlib import Path
@@ -52,7 +53,10 @@ class Scraping:
         with ZipFile(f'{os.getcwd()}/temp/output.zip', 'w') as myzip:
             for doc in docs:
                 print(doc.text)
-                doc.click()
+                try:
+                    doc.click()
+                except ElementClickInterceptedException:
+                    continue
                 time.sleep(3)
                 myzip.write(f'{os.getcwd()}/temp/{doc.text}', arcname=doc.text)
                 os.remove(f'{os.getcwd()}/temp/{doc.text}')
