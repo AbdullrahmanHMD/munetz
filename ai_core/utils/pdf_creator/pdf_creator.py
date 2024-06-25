@@ -2,8 +2,7 @@ import fitz
 from pathlib import Path
 from typing import List
 
-from python_scripts.pdf_creator.data_schemas import *
-# from data_schemas import *
+from utils.pdf_creator.data_schemas import *
 
 
 class PDFCreator():
