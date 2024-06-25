@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from pathlib import Path
+from zipfile import ZipFile
 
 
 class Scraping:
@@ -15,7 +16,7 @@ class Scraping:
     def setup_driver(self):
         options = webdriver.ChromeOptions()
         options.add_experimental_option('prefs', {
-            "download.default_directory": str(Path(os.getcwd()) / "docs"),
+            "download.default_directory": str(Path(os.getcwd()) / "temp"),
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
             "plugins.always_open_pdf_externally": True
@@ -38,11 +39,16 @@ class Scraping:
 
         doc_locator = locate_with(By.PARTIAL_LINK_TEXT, ".pdf").below(rows[-1])
         docs = self.driver.find_elements(doc_locator)
-        for doc in docs:
-            print(doc.text)
-            doc.click()
-        time.sleep(3)
+        with ZipFile(f'{os.getcwd()}/temp/output.zip', 'w') as myzip:
+            for doc in docs:
+                print(doc.text)
+                doc.click()
+                time.sleep(3)
+                myzip.write(f'{os.getcwd()}/temp/{doc.text}', arcname=doc.text)
+                os.remove(f'{os.getcwd()}/temp/{doc.text}')
         return details
+
+#TODO scrape html file as well
 
 
 if __name__ == "__main__":
