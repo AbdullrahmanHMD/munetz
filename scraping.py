@@ -56,6 +56,7 @@ class Scraping:
                 try:
                     doc.click()
                 except ElementClickInterceptedException:
+                    print(f"Skipped file {doc.text}")
                     continue
                 time.sleep(3)
                 myzip.write(f'{os.getcwd()}/temp/{doc.text}', arcname=doc.text)
