@@ -6,15 +6,25 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from pathlib import Path
 from zipfile import ZipFile
+from dotenv import load_dotenv
 
 
 class Scraping:
 
     def __init__(self):
+        load_dotenv()
         self.driver = None
 
     def setup_driver(self):
         options = webdriver.ChromeOptions()
+        if not os.getenv("LOCAL"):
+            # Flags required to run Chrome on the EC2 instance
+            options.add_argument("--headless")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--no-sandbox")
+            options.add_argument("enable-automation")
+            options.add_argument("--disable-infobars")
+            options.add_argument("--disable-dev-shm-usage")
         options.add_experimental_option('prefs', {
             "download.default_directory": str(Path(os.getcwd()) / "temp"),
             "download.prompt_for_download": False,
