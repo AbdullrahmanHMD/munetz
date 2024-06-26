@@ -1,0 +1,8 @@
+api_key: sk-proj-wmExG8KsPuL9RgAkUJuuT3BlbkFJbGWYOUBu7SzkI9LHdEwF
+
+model_config:
+  role: user
+
+persona_config:
+  persona_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\models\chatgpt_based_models_utils\personas\information_extraction
+  persona_file: persona.txt
