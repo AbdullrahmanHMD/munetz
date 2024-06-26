@@ -1,4 +1,3 @@
-# Ensure the folder1 is in the sys.path
 from openai import OpenAI
 
 from pathlib import Path

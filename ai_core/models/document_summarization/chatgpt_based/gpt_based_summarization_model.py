@@ -1,4 +1,3 @@
-# Ensure the folder1 is in the sys.path
 from pathlib import Path
 from models.document_summarization.chatgpt_based.utils.chatgpt_data_schemas import SummarizationLengthEnum
 from models.chatgpt_based_models_utils.shared_eums import GPTPrompts

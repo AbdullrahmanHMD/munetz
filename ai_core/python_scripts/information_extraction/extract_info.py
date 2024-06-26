@@ -17,10 +17,8 @@ def main():
     parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
 
     parser.add_argument("doc_name", type=str, help="The name of the document to extract information from.")
-
     parser.add_argument("info_to_extract", type=str,
                         help="The information to extract from the given document")
-
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
                         help="The path of the folder of the document to extract information from.")
 

@@ -1,4 +1,3 @@
-# Ensure the folder1 is in the sys.path
 from pathlib import Path
 from models.chatgpt_based_models_utils.shared_eums import GPTPrompts
 from models.chatgpt_based_models_utils.chatgpt_based_model import ChatGPTBasedModel
