@@ -25,7 +25,7 @@ def main():
                         help="The path where the summarized document will be saved.")
     parser.add_argument("-l", "--sum_len", type=str, default=script_defaults['summarization_len'],
                         help=" The length of the summarization.")
-    parser.add_argument("-f", "--save_pdf", type=bool, default=script_defaults['save_as_pdf'],
+    parser.add_argument("-f", "--print", action='store_false', default=script_defaults['save_as_pdf'],
                         help="Whether to save the document as PDF or return it as text.")
 
     args = parser.parse_args()
@@ -41,7 +41,7 @@ def main():
     summarization_len = SummarizationLengthFactory.get_summarization_length(args.sum_len)
     document_summary = summarization_model.summarize(document_content=document_content, summarization_len=summarization_len)
 
-    if args.save_pdf:
+    if args.print:
         original_doc_name = doc_name.split('.')[0]
         title = f"Summarization of {original_doc_name}"
         department = "Culture"
