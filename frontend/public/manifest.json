@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Fuck IT",
+  "name": "MuNetz Chatbot",
   "version": "1.0",
   "description": "A React-based chatbot extension",
   "action": {
