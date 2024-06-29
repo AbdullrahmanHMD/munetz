@@ -50,7 +50,7 @@ def main():
                         help="The path where the summarized document will be saved.")
     parser.add_argument("-l", "--sum_len", type=str, default=script_defaults['summarization_len'],
                         help=" The length of the summarization.")
-    parser.add_argument("-f", "--print", action='store_true', default=script_defaults['save_as_pdf'],
+    parser.add_argument("-f", "--print", action='store_true', default=script_defaults['display_summarization'],
                         help="Whether to save the document as PDF or return it as text.")
 
     args = parser.parse_args()
@@ -69,7 +69,7 @@ def main():
     if not args.print:
         # Creating the PDF file of the summarized file:
         original_doc_name = doc_name.split('.')[0]
-        title = f"Summarization of {clean_title(get_pdf_title(doc_path))}"
+        title = f"Summarization of {clean_title(get_pdf_title(doc_path))} This is the title of the longest long title of this PDF"
         department = "Culture"
         contact_info = "example@domain.com"
 

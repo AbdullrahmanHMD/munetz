@@ -39,7 +39,7 @@ def parse_extraced_info(info : str) -> dict:
 
             # Store in dictionary
             extracted_data[key] = value
-    return extracted_data
+    return extracted_data # TODO: While parsing the output, keep only the information keys you already have.
 
 
 def main():
@@ -50,6 +50,7 @@ def main():
     parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
 
     parser.add_argument("doc_name", type=str, help="The name of the document to extract information from.")
+    # parser.add_argument("html_file", type=str, help="The HTML file of the webpage to extract information from.")
     parser.add_argument("-i", "--info_to_extract", type=str, default=script_defaults['info_to_extract'],
                         help="The information to extract from the given document")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
