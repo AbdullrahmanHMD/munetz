@@ -11,6 +11,6 @@ class GPTInformationExtractionModel(ChatGPTBasedModel):
                          prompt=GPTPrompts.INFO_EXTRACTION.value)
 
 
-    def extract_info(self, document_content : str, extraction_prompt : str) -> str:
-        prompt = self.persona.get_persona() + '\n' + extraction_prompt + '\n' + document_content
+    def extract_info(self, document_content : str, info_to_extraction : str) -> str:
+        prompt = self.persona.get_persona() + '\n' + self.prompt.format(info_to_extraction) + '\n' + document_content
         return self.query_model(prompt=prompt)

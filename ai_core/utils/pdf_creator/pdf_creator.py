@@ -32,10 +32,10 @@ class PDFCreator():
             section_content, font_name, font_size, _ = section.content, section.font.value, section.font_size.value, section.text_color
 
             content_lines = PDFCreator.split_text_to_fit_width(text=section_content, font_name=font_name, font_size=font_size, max_width=max_width)
-            page, doc = self.fit_lines_into_width(doc=doc, page=page, content_lines=content_lines, current_margin=current_margin,
+            page, doc, current_margin = self.fit_lines_into_width(doc=doc, page=page, content_lines=content_lines, current_margin=current_margin,
                                                   line_spacing=line_spacing, section=section)
 
-            current_margin += font_size + section_margin
+            current_margin += section_margin
 
         return doc
 
@@ -50,7 +50,10 @@ class PDFCreator():
             page.insert_text((self.margin, current_margin), line, fontsize=font_size, fontname=font_name, color=color)
             current_margin += line_spacing
 
-        return page, doc
+            if font_size > line_spacing:
+                current_margin += font_size // 2
+
+        return page, doc, current_margin
 
 
     def create_pdf_doc(self, output_path : Path) -> None:

@@ -1,6 +1,8 @@
 from pathlib import Path
 import argparse
 import sys
+import re
+import fitz
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
@@ -10,6 +12,28 @@ from utils.pdf_creator.data_schemas import *
 from models.document_summarization.chatgpt_based.gpt_based_summarization_model import GPTSummarizationModel
 from models.document_summarization.chatgpt_based.utils.chatgpt_data_schemas import SummarizationLengthFactory
 
+def get_pdf_title(file_path): # TODO: Move this to another place.
+    document = fitz.open(file_path)
+    metadata = document.metadata
+
+    title = metadata.get('title', 'No Title Found')
+    return title
+
+
+def clean_title(raw_title): # TODO: Move this to another place.
+    file_extensions = ['.pdf', '.docx', '.doc', '.txt', '.xlsx', '.pptx', '.ppt']
+
+    for ext in file_extensions:
+        if raw_title.lower().endswith(ext):
+            raw_title = raw_title[:-(len(ext))]
+            break
+
+    raw_title = "".join(raw_title.split('.')[0])
+    raw_title = raw_title.replace("Microsoft Word - ", "")
+    raw_title = raw_title.replace('_', ' ').replace('-', ' ')
+    raw_title = re.sub(r'\s+', ' ', raw_title).strip()
+    raw_title = raw_title.title()
+    return raw_title
 
 def main():
     # Setting up the script's arguments:
@@ -19,13 +43,14 @@ def main():
     parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
 
     parser.add_argument("doc_name", type=str, help="The name of the document to summarize.")
+    # parser.add_argument("doc_title", type=str, help="The title of the summarized document")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
                         help="The path of the folder of the document to summarize.")
     parser.add_argument("-s", "--save_path", type=str, default=script_defaults['doc_save_path'],
                         help="The path where the summarized document will be saved.")
     parser.add_argument("-l", "--sum_len", type=str, default=script_defaults['summarization_len'],
                         help=" The length of the summarization.")
-    parser.add_argument("-f", "--print", action='store_false', default=script_defaults['save_as_pdf'],
+    parser.add_argument("-f", "--print", action='store_true', default=script_defaults['save_as_pdf'],
                         help="Whether to save the document as PDF or return it as text.")
 
     args = parser.parse_args()
@@ -41,9 +66,10 @@ def main():
     summarization_len = SummarizationLengthFactory.get_summarization_length(args.sum_len)
     document_summary = summarization_model.summarize(document_content=document_content, summarization_len=summarization_len)
 
-    if args.print:
+    if not args.print:
+        # Creating the PDF file of the summarized file:
         original_doc_name = doc_name.split('.')[0]
-        title = f"Summarization of {original_doc_name}"
+        title = f"Summarization of {clean_title(get_pdf_title(doc_path))}"
         department = "Culture"
         contact_info = "example@domain.com"
 
