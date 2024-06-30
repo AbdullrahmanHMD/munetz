@@ -39,6 +39,7 @@ def main():
     doc_path = Path(doc_folder_path) / doc_name
     document_content = read_pdf(doc_path=doc_path)
     all_content = f"PDF content:\n {document_content}\n\nHTML content:\n {args.html_file}"
+
     # Loading the information extraction model:
     information_extraction_model = GPTInformationExtractionModel()
     extracted_info = information_extraction_model.extract_info(document_content=all_content, info_to_extraction=info_to_extract)
