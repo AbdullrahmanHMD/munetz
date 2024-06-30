@@ -1,3 +1,8 @@
 doc_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\document_summarization\docs
 
-info_to_extract: contact_information,location,author,partners # TODO: Make this a list since it is going to be constant
+info_to_extract:
+  - emails
+  - phone_numbers
+  - location
+  - author
+  - partners

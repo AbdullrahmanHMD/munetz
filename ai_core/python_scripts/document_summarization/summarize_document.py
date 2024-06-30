@@ -43,7 +43,6 @@ def main():
     parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
 
     parser.add_argument("doc_name", type=str, help="The name of the document to summarize.")
-    # parser.add_argument("doc_title", type=str, help="The title of the summarized document")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
                         help="The path of the folder of the document to summarize.")
     parser.add_argument("-s", "--save_path", type=str, default=script_defaults['doc_save_path'],
@@ -89,7 +88,7 @@ def main():
 
         pdf_creator = PDFCreator(document_size=document_size, sections=sections, document_style=document_style, text_margin=text_margin)
         pdf_creator.create_pdf_doc(doc_save_path)
-        print("document summarized")
+        print("Document summarized")
     else:
         print(document_summary)
 

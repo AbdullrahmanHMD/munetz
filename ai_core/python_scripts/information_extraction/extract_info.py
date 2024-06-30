@@ -9,38 +9,15 @@ from utils.pdf_creator.data_schemas import *
 from models.information_extraction.chatgpt_based.gpt_based_info_extraction_model import GPTInformationExtractionModel
 
 
-def parse_extraced_info(info : str) -> dict:
-    extracted_data = {}
-
-    # Find the starting point
-    start_marker = 'EXTRACTION_TEMPLATE:'
-    start_index = info.find(start_marker)
-
-    # Ensure the marker is found
-    if start_index != -1:
-        # Extract substring starting from the marker
-        substring = info[start_index + len(start_marker):]
-
-        # Split substring into lines
-        lines = substring.splitlines()
-
-        # Process each line to form key-value pairs until a blank line or end of input
-        for line in lines:
-            line = line.strip()
-            if not line:
-                break  # Stop processing on encountering a blank line
-
-            # Split key-value pair by colon
-            key, value = line.split(':', 1)
-
-            # Strip whitespace from key and value
-            key = key.strip()
-            value = value.strip()
-
-            # Store in dictionary
-            extracted_data[key] = value
-    return extracted_data # TODO: While parsing the output, keep only the information keys you already have.
-
+def parse_extracted_info(info : str, info_list : list) -> dict:
+    info_dict = {}
+    for line in info.split('\n'):
+        colon_idx = line.find(':')
+        if colon_idx != -1:
+            key, val = line[:colon_idx].strip(), line[colon_idx + 1:].strip()
+            if key in info_list:
+                info_dict[key] = val
+    return info_dict
 
 def main():
     # Setting up the script's arguments:
@@ -48,26 +25,25 @@ def main():
     script_defaults = read_config(script_defaults_config_path)
 
     parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
-
     parser.add_argument("doc_name", type=str, help="The name of the document to extract information from.")
-    # parser.add_argument("html_file", type=str, help="The HTML file of the webpage to extract information from.")
-    parser.add_argument("-i", "--info_to_extract", type=str, default=script_defaults['info_to_extract'],
-                        help="The information to extract from the given document")
+    parser.add_argument("html_file", type=str, help="The HTML file of the webpage to extract information from.")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
                         help="The path of the folder of the document to extract information from.")
 
     args = parser.parse_args()
 
+    info_to_extract = script_defaults['info_to_extract']
+
     # Loading the PDF document to extract information from:
     doc_folder_path, doc_name = args.doc_path, args.doc_name
     doc_path = Path(doc_folder_path) / doc_name
     document_content = read_pdf(doc_path=doc_path)
-
+    all_content = f"PDF content:\n {document_content}\n\nHTML content:\n {args.html_file}"
     # Loading the information extraction model:
     information_extraction_model = GPTInformationExtractionModel()
-    extracted_info = information_extraction_model.extract_info(document_content=document_content, info_to_extraction=args.info_to_extract.split(","))
-    print(extracted_info)
-    # print(parse_extraced_info(extracted_info))
+    extracted_info = information_extraction_model.extract_info(document_content=all_content, info_to_extraction=info_to_extract)
+    print(parse_extracted_info(info=extracted_info, info_list=info_to_extract))
+
 
 if __name__=="__main__":
     main()
