@@ -1,12 +1,11 @@
 import OpenAI from "openai"
-import { exec as execCb } from "child_process"
-import { promisify } from "util"
-import path from "path"
 
 import dotenv from "dotenv"
+import { handleZip } from "./utils/zipHandler.js"
+import { getPDFs } from "./utils/scrapingService.js"
+import { deleteOriginal, deleteSummary, summarize } from "./utils/summarizationService.js"
 dotenv.config()
 
-const exec = promisify(execCb)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 const simpleController = async (req, res) => {
@@ -24,59 +23,34 @@ const simpleController = async (req, res) => {
 }
 
 const summarizeController = (isPdfReturn) => async (req, res) => {
-    const pdf = req.file
-    if (!pdf) {
-        return res.status(400).json({ message: "No file uploaded" })
-    }
-    const pdfName = pdf.filename
-    const runScript = async () => {
-        const command = `python ../ai_core/python_scripts/document_summarization/summarize_document.py ${pdfName}${
-            isPdfReturn ? "" : " --print"
-        }`
-        const { stdout, stderr } = await exec(command)
-        if (stderr) {
-            throw new Error(stderr)
-        }
-        console.log(`stdout: ${stdout}`)
-        return stdout
+    const { url: pageUrl } = req.body
+    if (!pageUrl) {
+        return res.status(400).json({ message: "Please specify a page URL" })
     }
 
+    var pdfNames = []
     try {
-        const scriptResult = await runScript()
-
+        const pdfData = await getPDFs(pageUrl)
+        pdfNames = await handleZip(pdfData)
+        // return res.send('Files extracted successfully.'); // TODO: testing - remove
+        const summaries = []
+        pdfNames.forEach(async (name) => {
+            const summary = await summarize(name, isPdfReturn)
+            summaries.push(summary)
+        })
         if (isPdfReturn) {
-            // Send the file
-            const relativePath =
-                "../ai_core/python_scripts/document_summarization/summarized_docs"
-            const absolutePath = path.resolve(relativePath)
-            const resultFileName = pdfName.replace(".pdf", "_summarized.pdf")
-            const filePath = `${absolutePath}/${resultFileName}`
-            res.sendFile(filePath, (err) => {
-                if (err) {
-                    console.error("File sending failed:", err)
-                    res.status(500).json({
-                        error: "Failed to send file - " + err.message,
-                    })
-                }
-            })
+            // TODO: handle sending PDFs (send as zip?)
         } else {
-            res.status(200).json({ summary: scriptResult })
+            res.status(200).json({ summaries })
         }
     } catch (e) {
-        console.error(e.message)
-        res.status(500).json({ error: e.message })
+        return res.status(500).send(e)
     } finally {
-        // delete uploaded file
-        execCb(
-            `rm -f ../ai_core/python_scripts/document_summarization/docs/${pdfName}`
-        )
-        // delete summarized file
-        execCb(
-            `rm -f ../ai_core/python_scripts/document_summarization/summarized_docs/${pdfName.replace(
-                ".pdf",
-                "_summarized.pdf"
-            )}`
-        )
+        // Delete files files after returning - //TODO: rework if separate request for returning file names
+        pdfNames.forEach((name) => {
+            deleteOriginal(name)
+            deleteSummary(name)
+        })
     }
 }
 

@@ -6,8 +6,8 @@ const router = Router()
 
 // TODO: register routes
 router.post('/simple', simpleController)
-router.post('/summarize', upload.single('pdf'), summarizeController(false))
-router.post('/summarize/pdf', upload.single('pdf'), summarizeController(true))
+router.post('/summarize', summarizeController(false))
+router.post('/summarize/pdf', summarizeController(true))
 router.post('/find-info', upload.single('pdf'), findInfoController)
 
 export default router;
