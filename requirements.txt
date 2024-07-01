@@ -1,2 +1,5 @@
 fitz
 PyYAML
+openai
+pathlib
+argparse
