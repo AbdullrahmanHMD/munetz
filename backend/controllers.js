@@ -1,5 +1,4 @@
 import OpenAI from "openai"
-
 import dotenv from "dotenv"
 import { handleZip } from "./utils/zipHandler.js"
 import { getPDFs } from "./utils/scrapingService.js"
@@ -32,18 +31,18 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
     try {
         const pdfData = await getPDFs(pageUrl)
         pdfNames = await handleZip(pdfData)
-        // return res.send('Files extracted successfully.'); // TODO: testing - remove
         const summaries = []
-        pdfNames.forEach(async (name) => {
-            const summary = await summarize(name, isPdfReturn)
-            summaries.push(summary)
-        })
+        for (const name of pdfNames) {
+            const summary = await summarize(name, isPdfReturn);
+            summaries.push(summary);
+        }
         if (isPdfReturn) {
             // TODO: handle sending PDFs (send as zip?)
         } else {
             res.status(200).json({ summaries })
         }
     } catch (e) {
+        console.error(e.message);
         return res.status(500).send(e)
     } finally {
         // Delete files files after returning - //TODO: rework if separate request for returning file names

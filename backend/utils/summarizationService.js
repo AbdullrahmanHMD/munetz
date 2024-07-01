@@ -14,27 +14,26 @@ const summarize = async (fileName, isToPDF) => {
 const deleteSummary = (fileName) => {
     // delete summarized file
     const path =
-        "../../ai_core/python_scripts/document_summarization/summarized_docs/"
+        "../ai_core/python_scripts/document_summarization/summarized_docs/"
     const summarizedFileName = fileName.replace(".pdf", "_summarized.pdf")
-    execCb(`rm -f ${path}/${summarizedFileName}`)
+    execCb(`rm -f ${path}/"${summarizedFileName}"`)
 }
 
 const deleteOriginal = (fileName) => {
     // delete original file
     const path =
-        "../../ai_core/python_scripts/document_summarization/docs/"
-    execCb(`rm -f ${path}/${fileName}`)
+        "../ai_core/python_scripts/document_summarization/docs/"
+    execCb(`rm -f ${path}/"${fileName}"`)
 }
 
 const runScript = async (scriptName, input, args) => {
     const scriptsDirectory =
-        "../../ai_core/python_scripts/document_summarization"
-    const command = `python ${scriptsDirectory}/${scriptName} ${input} ${args}`
+        "../ai_core/python_scripts/document_summarization"
+    const command = `python ${scriptsDirectory}/${scriptName} "${input}" ${args}`
     const { stdout, stderr } = await exec(command)
     if (stderr) {
         throw new Error(stderr)
     }
-    console.log(`stdout: ${stdout}`)
     return stdout
 }
 

@@ -1,32 +1,31 @@
 import fs from "fs"
-import JSZip from "jszip"
-import path from "path"
+import { exec as execCb } from "child_process"
+import { promisify } from "util"
+
+const exec = promisify(execCb)
 
 const handleZip = async (data) => {
-    const zip = new JSZip()
-    const zipContents = await zip.loadAsync(data)
-
-    const fileNames = []
-    // Loop through each file in the zip
-    for (const [filename, fileData] of Object.entries(zipContents.files)) {
-        if (!fileData.dir) {
-            // Skip directories
-            // Read the content of the file
-            const fileContent = await fileData.async("nodebuffer")
-
-            // Define path to save the file
-            const filePath = path.join(
-                "../../ai_core/python_scripts/document_summarization/docs",
-                filename
-            )
-
-            // Save the file
-            fs.writeFileSync(filePath, fileContent)
-
-            fileNames.push(filename)
-        }
+    fs.writeFileSync("scripts/zipBinaryContent.txt", data)
+    console.log("File saved successfully.")
+    const script = "scripts/zipExtractor.py"
+    const command = `python ${script}`
+    const { stdout, stderr } = await exec(command)
+    if (stderr) {
+        throw new Error(stderr)
     }
-    
+
+    fs.unlink("scripts/zipBinaryContent.txt", (err) => {
+        if (err) {
+            console.warn("Failed deleting zip content file", err)
+        } else {
+            console.log("Zip content file deleted successfully")
+        }
+    })
+
+    const fileNames = stdout
+        .split(",")
+        .map((name) => name.trim())
+        .filter((name) => name.length > 0)
     return fileNames
 }
 
