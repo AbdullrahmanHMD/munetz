@@ -2,7 +2,11 @@ import OpenAI from "openai"
 import dotenv from "dotenv"
 import { handleZip } from "./utils/zipHandler.js"
 import { getPDFs } from "./utils/scrapingService.js"
-import { deleteOriginal, deleteSummary, summarize } from "./utils/summarizationService.js"
+import {
+    deleteOriginal,
+    deleteSummary,
+    summarize,
+} from "./utils/summarizationService.js"
 dotenv.config()
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -21,6 +25,12 @@ const simpleController = async (req, res) => {
     }
 }
 
+const getTitle = (name) => {
+    const parts = name.split("-")
+    parts.shift()
+    return parts.join("-").replace('.pdf', '')
+}
+
 const summarizeController = (isPdfReturn) => async (req, res) => {
     const { url: pageUrl } = req.body
     if (!pageUrl) {
@@ -33,8 +43,9 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
         pdfNames = await handleZip(pdfData)
         const summaries = []
         for (const name of pdfNames) {
-            const summary = await summarize(name, isPdfReturn);
-            summaries.push(summary);
+            const summary = await summarize(name, isPdfReturn)
+            const title = getTitle(name)
+            summaries.push({ title: title, content: summary })
         }
         if (isPdfReturn) {
             // TODO: handle sending PDFs (send as zip?)
@@ -42,7 +53,7 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
             res.status(200).json({ summaries })
         }
     } catch (e) {
-        console.error(e.message);
+        console.error(e.message)
         return res.status(500).send(e)
     } finally {
         // Delete files files after returning - //TODO: rework if separate request for returning file names
