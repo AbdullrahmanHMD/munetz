@@ -3,6 +3,8 @@ import { createChatBotMessage } from "react-chatbot-kit";
 import React from "react";
 import CustomOptions from "./CustomOptions";
 import robot from '../robot.png';
+import ChatbotMessage from "./ChatbotMessage";
+import CustomWidget from "./CustomWidget";
 
 const config = {
     botName: "MuNetz",
@@ -25,6 +27,10 @@ const config = {
         {
             widgetName: "options",
             widgetFunc: (props) => <CustomOptions {...props} />,
+        },
+        {
+            widgetName: "custom",
+            widgetFunc: (props) => <CustomWidget {...props} />,
         },
     ],
 };
