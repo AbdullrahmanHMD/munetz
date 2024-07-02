@@ -27,5 +27,6 @@ class GPTChatBotModel(ChatGPTBasedModel):
         model_response = self.query_model(prompt=prompt)
 
         self.history.append_to_history(ChatBotMessage(role="user", message_content=user_message))
-        self.history.append_to_history(ChatBotMessage(role="assistance", message_content=model_response))
+        self.history.append_to_history(ChatBotMessage(role="assistant", message_content=model_response))
+
         return model_response
