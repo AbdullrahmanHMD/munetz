@@ -10,19 +10,19 @@ class ChatGPTBasedModel():
         self.config = read_config(config_path)
         self.client  = OpenAI(api_key=self.config['api_key'])
 
-        self.role = self.config['model_config']['role']
+        self.persona_role = self.config['model_config']['persona_role']
+        self.query_role = self.config['model_config']['query_role']
         self.gpt_type = self.config['model_config']['gpt_type']
 
         self.persona = Persona.from_config(config=self.config['persona_config'])
         self.prompt = prompt
 
-        self.initialize_persona()
 
     def initialize_persona(self):
         _ = self.client.chat.completions.create(
             messages=[
                 {
-                    "role": self.role,
+                    "role": self.persona_role,
                     "content": self.persona.get_persona(),
                 }
             ],
@@ -30,10 +30,13 @@ class ChatGPTBasedModel():
         )
 
     def query_model(self, prompt : str):
+
+        self.initialize_persona()
+
         chat_completion = self.client.chat.completions.create(
             messages=[
                 {
-                    "role": self.role,
+                    "role": self.query_role,
                     "content": prompt,
                 }
             ],

@@ -1,0 +1,21 @@
+api_key: sk-proj-wmExG8KsPuL9RgAkUJuuT3BlbkFJbGWYOUBu7SzkI9LHdEwF
+
+model_config:
+  persona_role : system
+  query_role: user
+  gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
+
+history_config:
+  history_folder_path : G:\Edu\TUM_Tech_Challenge\munetz\ai_core\models\chatbot\chatgpt_based\utils\conversation_history
+  history_file_name : conversation_history.pkl
+  history_depth : 10
+
+knowledge_config:
+  knowledge_folder_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\models\chatbot\chatgpt_based\utils\chatbot_knowledge
+  knowledge_files_to_use:
+    - file1.txt
+    - file2.txt
+
+persona_config:
+  persona_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\models\chatgpt_based_models_utils\personas\document_summarization
+  persona_file_name: persona.txt

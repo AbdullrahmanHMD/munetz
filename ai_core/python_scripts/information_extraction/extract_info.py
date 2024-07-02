@@ -24,7 +24,7 @@ def main():
     script_defaults_config_path = Path(__file__).resolve().parent / 'script_defaults.yaml'
     script_defaults = read_config(script_defaults_config_path)
 
-    parser = argparse.ArgumentParser(description="A script for summarizing PDF documents")
+    parser = argparse.ArgumentParser(description="A script for extracting information from PDF documents")
     parser.add_argument("doc_name", type=str, help="The name of the document to extract information from.")
     parser.add_argument("html_file", type=str, help="The HTML file of the webpage to extract information from.")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
@@ -43,6 +43,7 @@ def main():
     # Loading the information extraction model:
     information_extraction_model = GPTInformationExtractionModel()
     extracted_info = information_extraction_model.extract_info(document_content=all_content, info_to_extraction=info_to_extract)
+    print(extracted_info)
     print(parse_extracted_info(info=extracted_info, info_list=info_to_extract))
 
 
