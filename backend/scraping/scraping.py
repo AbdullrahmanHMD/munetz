@@ -30,7 +30,9 @@ class Scraping:
             "download.default_directory": str(Path(os.getcwd()) / "temp"),
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
-            "plugins.always_open_pdf_externally": True
+            "plugins.always_open_pdf_externally": True,
+            'profile.managed_default_content_settings.javascript': 2,
+            'profile.managed_default_content_settings.image': 2
         })
         self.driver = webdriver.Chrome(options=options)
 
