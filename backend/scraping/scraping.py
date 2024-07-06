@@ -52,7 +52,11 @@ class Scraping:
     def get_details(self, url):
         self.driver.get(url)
         WebDriverWait(self.driver, 5).until(lambda d: d.execute_script("return document.readyState") == "complete")
-        info_locator = locate_with(By.CLASS_NAME, "keyvalue-row").below({By.ID: "sectionheader-info"})
+        if "sitzungsvorlage" in url:
+            # Sitzungsvorlagen have a slightly different header ID than other document types
+            info_locator = locate_with(By.CLASS_NAME, "keyvalue-row").below({By.ID: "sectionheader-informationen"})
+        else:
+            info_locator = locate_with(By.CLASS_NAME, "keyvalue-row").below({By.ID: "sectionheader-info"})
         details = dict()
         try:
             rows = self.driver.find_elements(info_locator)
