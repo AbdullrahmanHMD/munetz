@@ -34,10 +34,18 @@ class HelloWorld(Resource):
 class Details(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('url', type=str)
+        parser.add_argument('url', type=str, required=True, location='json')
         args = parser.parse_args()
-        print(args)
-        return {"test": "test"}, 200
+        try:
+            url = inputs.url(args['url'])
+        except ValueError:
+            return {"msg": "No valid URL"}, 400
+        scraping = Scraping()
+        scraping.setup_driver()
+        details = scraping.get_details(url)
+        scraping.shutdown_driver()
+        print(details)
+        return Response(details, mimetype='application/json')
 
 
 class Scraper(Resource):
@@ -51,9 +59,8 @@ class Scraper(Resource):
             return {"msg": "No valid URL"}, 400
         scraping = Scraping()
         scraping.setup_driver()
-        details, links = scraping.get_page(url)
+        links = scraping.get_page(url)
         scraping.shutdown_driver()
-        print(details)
         print(links)
         download(links)
         with open(temp_dir / "output.zip", 'rb') as zipfile:
@@ -64,7 +71,7 @@ class Scraper(Resource):
 
 
 api.add_resource(HelloWorld, '/hello_world')
-api.add_resource(Details, '/details')
+api.add_resource(Details, '/scraper/details')
 api.add_resource(Scraper, '/scraper')
 
 if __name__ == '__main__':

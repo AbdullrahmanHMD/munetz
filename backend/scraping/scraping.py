@@ -1,3 +1,4 @@
+import json
 import os
 import time
 
@@ -6,6 +7,7 @@ from selenium.common import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import JavascriptException
 from selenium.webdriver.support.relative_locator import locate_with
+from selenium.webdriver.support.wait import WebDriverWait
 from pathlib import Path
 from zipfile import ZipFile
 from dotenv import load_dotenv
@@ -40,9 +42,16 @@ class Scraping:
 
     def get_page(self, url):
         self.driver.get(url)
-        # TODO: change to wait for all relevant elements to be loaded instead
-        self.driver.implicitly_wait(5)
-        boxes = self.driver.find_elements(By.CLASS_NAME, "mt-4")
+        WebDriverWait(self.driver, 5).until(lambda d: d.execute_script("return document.readyState") == "complete")
+        # Locate all PDFs
+        doc_locator = locate_with(By.PARTIAL_LINK_TEXT, ".pdf")
+        docs = self.driver.find_elements(doc_locator)
+        links = [(doc.text, doc.get_attribute('href')) for doc in docs]
+        return links
+
+    def get_details(self, url):
+        self.driver.get(url)
+        WebDriverWait(self.driver, 5).until(lambda d: d.execute_script("return document.readyState") == "complete")
         info_locator = locate_with(By.CLASS_NAME, "keyvalue-row").below({By.ID: "sectionheader-info"})
         details = dict()
         try:
@@ -52,11 +61,7 @@ class Scraping:
         except JavascriptException:
             # TODO: fix error for some types of pages (https://risi.muenchen.de/risi/sitzungsvorlage/detail/8322280?dokument=v8482514)
             pass
-
-        doc_locator = locate_with(By.PARTIAL_LINK_TEXT, ".pdf")
-        docs = self.driver.find_elements(doc_locator)
-        links = [(doc.text, doc.get_attribute('href')) for doc in docs]
-        return details, links
+        return json.dumps(details)
 
 # TODO scrape html file as well
 
