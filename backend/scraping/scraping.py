@@ -46,7 +46,7 @@ class Scraping:
         doc_locator = locate_with(By.PARTIAL_LINK_TEXT, ".pdf")
         docs = self.driver.find_elements(doc_locator)
         links = [(doc.text, doc.get_attribute('href')) for doc in docs]
-        return links
+        return links, self.driver.page_source
 
     def get_details(self, url):
         self.driver.get(url)

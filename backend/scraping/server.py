@@ -17,13 +17,14 @@ api = Api(app)
 temp_dir = Path("../../.tmp")
 
 
-def download(links):
+def download(links, html):
     temp_dir.mkdir(exist_ok=True)
     with ZipFile(temp_dir / "output.zip", 'w') as myzip:
         for filename, url in links:
             file_data = requests.get(url).content
             # TODO: add compression?
             myzip.writestr(filename, file_data)
+        myzip.writestr("index.html", html)
 
 
 class HelloWorld(Resource):
@@ -59,10 +60,10 @@ class Scraper(Resource):
             return {"msg": "No valid URL"}, 400
         scraping = Scraping()
         scraping.setup_driver()
-        links = scraping.get_page(url)
+        links, html = scraping.get_page(url)
         scraping.shutdown_driver()
         print(links)
-        download(links)
+        download(links, html)
         with open(temp_dir / "output.zip", 'rb') as zipfile:
             file_data = zipfile.read()
             file_encoded = base64.b64encode(file_data)
