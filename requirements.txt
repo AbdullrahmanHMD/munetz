@@ -3,3 +3,4 @@ PyYAML
 openai
 pathlib
 argparse
+beautifulsoup4

@@ -1,4 +1,4 @@
-doc_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\document_summarization\docs
-doc_save_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\document_summarization\summarized_docs
+doc_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\shared_docs\pdf
+doc_save_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\shared_docs\summarized_pdf
 summarization_len: medium
 display_summarization: False

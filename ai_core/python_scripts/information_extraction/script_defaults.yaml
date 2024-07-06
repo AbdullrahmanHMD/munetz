@@ -1,4 +1,7 @@
-doc_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\document_summarization\docs
+doc_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\shared_docs\pdf
+html_default_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\python_scripts\shared_docs\html
+
+num_to_retry_prompt : 3
 
 info_to_extract:
   - emails

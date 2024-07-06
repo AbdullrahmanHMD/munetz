@@ -37,3 +37,8 @@ class ChatHistory():
     def save_history(self) -> None:
         with open(self.history_file_path, 'wb') as file:
             pickle.dump(self._history, file)
+
+
+    def clear_history(self) -> None:
+        self._history = []
+        self.save_history()

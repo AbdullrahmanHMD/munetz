@@ -14,4 +14,4 @@ defined in your persona."""
 
 PROMPT: {}
 
-You have chat history that you can refer to if needed in this chat. HISTORY: {}"""
+You have chat history to refer to -> HISTORY: {}"""
