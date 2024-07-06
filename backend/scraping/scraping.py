@@ -1,16 +1,13 @@
 import json
 import os
-import time
+from pathlib import Path
 
+from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.common import ElementClickInterceptedException
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import JavascriptException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support.wait import WebDriverWait
-from pathlib import Path
-from zipfile import ZipFile
-from dotenv import load_dotenv
 
 
 class Scraping:
@@ -63,7 +60,6 @@ class Scraping:
             for row in rows:
                 details[row.find_element(By.CLASS_NAME, "keyvalue-key").text] = row.find_element(By.CLASS_NAME, "keyvalue-value").text
         except JavascriptException:
-            # TODO: fix error for some types of pages (https://risi.muenchen.de/risi/sitzungsvorlage/detail/8322280?dokument=v8482514)
             pass
         return json.dumps(details)
 
