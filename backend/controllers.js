@@ -1,4 +1,3 @@
-import OpenAI from "openai"
 import dotenv from "dotenv"
 import { handleZip } from "./utils/zipHandler.js"
 import { getPDFs } from "./utils/scrapingService.js"
@@ -8,22 +7,6 @@ import {
     summarize,
 } from "./utils/summarizationService.js"
 dotenv.config()
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-const simpleController = async (req, res) => {
-    const { prompt } = req.body
-    try {
-        const completion = await openai.chat.completions.create({
-            messages: [{ role: "system", content: prompt }],
-            model: "gpt-3.5-turbo",
-        })
-        const answer = completion.choices[0].message.content
-        res.status(200).json({ answer })
-    } catch (e) {
-        res.status(e.status || 500).json({ error: e.message })
-    }
-}
 
 const getTitle = (name) => {
     const parts = name.split("-")
@@ -37,12 +20,13 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
         return res.status(400).json({ message: "Please specify a page URL" })
     }
 
-    var pdfNames = []
+    var fileNames = []
     try {
         const pdfData = await getPDFs(pageUrl)
-        pdfNames = await handleZip(pdfData)
+        fileNames = await handleZip(pdfData)
         const summaries = []
-        for (const name of pdfNames) {
+        for (const name of fileNames) {
+            if (!name.endsWith('.pdf')) continue
             const summary = await summarize(name, isPdfReturn)
             const title = getTitle(name)
             summaries.push({ title: title, content: summary })
@@ -57,7 +41,7 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
         return res.status(500).send(e)
     } finally {
         // Delete files files after returning - //TODO: rework if separate request for returning file names
-        pdfNames.forEach((name) => {
+        fileNames.forEach((name) => {
             deleteOriginal(name)
             deleteSummary(name)
         })
@@ -94,4 +78,4 @@ const findInfoController = async (req, res) => {
     }
 }
 
-export { simpleController, summarizeController, findInfoController }
+export { summarizeController, findInfoController }
