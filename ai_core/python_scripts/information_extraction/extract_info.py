@@ -37,8 +37,6 @@ def main():
     parser.add_argument("html_name", type=str, help="The name of the HTML file of the webpage to extract information from.")
     parser.add_argument("-p", "--doc_path", type=str, default=script_defaults['doc_default_path'],
                         help="The path of the folder of the document to extract information from.")
-    parser.add_argument("-t", "--html_path", type=str, default=script_defaults['html_default_path'],
-                        help="The path of the folder of the document to extract information from.")
 
     args = parser.parse_args()
 
@@ -50,7 +48,7 @@ def main():
     documents_content = read_pdfs(doc_paths=docs_paths)
     all_pdfs_content = "\n\n".join(documents_content)
 
-    html_name, html_folder_path = args.html_name, args.html_path
+    html_name, html_folder_path = args.html_name, args.doc_path
     html_path = Path(html_folder_path) / html_name
 
     html_content = read_and_parse_html(html_path=html_path)
