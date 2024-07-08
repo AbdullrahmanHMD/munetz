@@ -4,16 +4,17 @@ import { promisify } from "util"
 const exec = promisify(execCb)
 
 const summarize = async (fileName, isToPDF) => {
+    let quotedFileName = `"${fileName}"`
     return await runScript(
-        "summarize_document.py",
-        fileName,
+        "document_summarization/summarize_document.py",
+        quotedFileName,
         isToPDF ? "" : "--print"
     )
 }
 
 const extractInfo = async (inputFileNames) => {
     return await runScript(
-        "extract_info.py",
+        "information_extraction/extract_info.py",
         inputFileNames,
     )
 }
@@ -21,7 +22,7 @@ const extractInfo = async (inputFileNames) => {
 const deleteSummary = (fileName) => {
     // delete summarized file
     const path =
-        "../ai_core/python_scripts/document_summarization/summarized_docs/"
+        "../ai_core/python_scripts/shared_docs/summarized_pdf/"
     const summarizedFileName = fileName.replace(".pdf", "_summarized.pdf")
     execCb(`rm -f ${path}/"${summarizedFileName}"`)
 }
@@ -29,14 +30,17 @@ const deleteSummary = (fileName) => {
 const deleteOriginal = (fileName) => {
     // delete original file
     const path =
-        "../ai_core/python_scripts/document_summarization/docs/"
+        "../ai_core/python_scripts/shared_docs/"
     execCb(`rm -f ${path}/"${fileName}"`)
 }
 
 const runScript = async (scriptName, input, args) => {
     const scriptsDirectory =
-        "../ai_core/python_scripts/document_summarization"
-    const command = `python ${scriptsDirectory}/${scriptName} "${input}" ${args}`
+        "../ai_core/python_scripts"
+    let command = `python ${scriptsDirectory}/${scriptName} ${input}`
+    if (args) {
+        command += ` ${args}`
+    }
     const { stdout, stderr } = await exec(command)
     if (stderr) {
         throw new Error(stderr)

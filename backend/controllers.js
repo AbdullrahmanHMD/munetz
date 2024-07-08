@@ -6,7 +6,7 @@ import {
     deleteSummary,
     extractInfo,
     summarize,
-} from "./utils/summarizationService.js"
+} from "./utils/processingService.js"
 dotenv.config()
 
 const getTitle = (name) => {
@@ -63,8 +63,8 @@ const findInfoController = async (req, res) => {
             ...fileNames.filter((name) => !name.endsWith(".html")),
             fileNames.find((name) => name.endsWith(".html")),
         ]
-        const fileNamesInput = orderedFileNames.join(" ")
-        console.log("input files:", fileNamesInput);
+        const fileNamesInput = orderedFileNames.map((name) => `"${name}"`).join(" ")
+        console.log("input files:", fileNamesInput)
         const extractedInfo = await extractInfo(fileNamesInput)
         res.status(200).json(JSON.parse(extractedInfo))
     } catch (e) {
@@ -76,34 +76,6 @@ const findInfoController = async (req, res) => {
             deleteOriginal(name)
             deleteSummary(name)
         })
-    }
-
-    const pdf = req.file
-    const prompt = req.body.prompt
-    if (!pdf) {
-        return res.status(400).json({ message: "No file uploaded" })
-    }
-    if (!prompt || !prompt.length) {
-        return res.status(400).json({ message: "No prompt entered" })
-    }
-    const runScript = async () => {
-        const command = `python ./scripts/find_info.py ${pdf.originalname} ${pdf.path} ${prompt}`
-        const { stdout, stderr } = await exec(command)
-        if (stderr) {
-            throw new Error(stderr)
-        }
-        console.log(`stdout: ${stdout}`)
-        return stdout
-    }
-
-    try {
-        const scriptResult = await runScript()
-        res.status(200).json({ result: scriptResult })
-    } catch (e) {
-        console.error(e.message)
-        res.status(500).json({ error: e.message })
-    } finally {
-        execCb("rm -f ./uploads/originalDoc.pdf") // TODO: read path from config
     }
 }
 
