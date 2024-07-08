@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import { handleZip } from "./utils/zipHandler.js"
 import { getPDFs } from "./utils/scrapingService.js"
 import {
+    chatbot,
     deleteOriginal,
     deleteSummary,
     extractInfo,
@@ -79,4 +80,15 @@ const findInfoController = async (req, res) => {
     }
 }
 
-export { summarizeController, findInfoController }
+const chatbotController = async (req, res) => {
+    try {
+        const {prompt} = req.body
+        const reply = await chatbot(prompt)
+        res.status(200).json({reply})
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+    
+}
+
+export { summarizeController, findInfoController, chatbotController }

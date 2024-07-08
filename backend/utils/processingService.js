@@ -19,6 +19,13 @@ const extractInfo = async (inputFileNames) => {
     )
 }
 
+const chatbot = async (prompt) => {
+    return await runScript(
+        "chatbot/chatbot.py",
+        `"${prompt}"`,
+    )
+}
+
 const deleteSummary = (fileName) => {
     // delete summarized file
     const path =
@@ -48,4 +55,4 @@ const runScript = async (scriptName, input, args) => {
     return stdout
 }
 
-export { summarize, deleteSummary, deleteOriginal, extractInfo }
+export { summarize, deleteSummary, deleteOriginal, extractInfo, chatbot }
