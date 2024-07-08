@@ -1,9 +1,11 @@
 api_key: sk-proj-wmExG8KsPuL9RgAkUJuuT3BlbkFJbGWYOUBu7SzkI9LHdEwF
 
 model_config:
-  role: user
+  persona_role : system
+  query_role: user
+  gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
   gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
 
 persona_config:
   persona_path: C:\Users\walee\Desktop\tc24\munetz\ai_core\models\chatgpt_based_models_utils\personas\information_extraction
-  persona_file_name: persona.txt
+  persona_file_name: persona2.txt
