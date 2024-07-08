@@ -11,6 +11,13 @@ const summarize = async (fileName, isToPDF) => {
     )
 }
 
+const extractInfo = async (inputFileNames) => {
+    return await runScript(
+        "extract_info.py",
+        inputFileNames,
+    )
+}
+
 const deleteSummary = (fileName) => {
     // delete summarized file
     const path =
@@ -37,4 +44,4 @@ const runScript = async (scriptName, input, args) => {
     return stdout
 }
 
-export { summarize, deleteSummary, deleteOriginal }
+export { summarize, deleteSummary, deleteOriginal, extractInfo }
