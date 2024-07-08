@@ -1,50 +1,50 @@
+import OpenAI from "openai"
+import { exec as execCb } from "child_process"
+import { promisify } from "util"
+
 import dotenv from "dotenv"
-import { handleZip } from "./utils/zipHandler.js"
-import { getPDFs } from "./utils/scrapingService.js"
-import {
-    deleteOriginal,
-    deleteSummary,
-    summarize,
-} from "./utils/summarizationService.js"
 dotenv.config()
 
-const getTitle = (name) => {
-    const parts = name.split("-")
-    parts.shift()
-    return parts.join("-").replace('.pdf', '')
+const exec = promisify(execCb)
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+const simpleController = async (req, res) => {
+    const { prompt } = req.body
+    try {
+        const completion = await openai.chat.completions.create({
+            messages: [{ role: "system", content: prompt }],
+            model: "gpt-3.5-turbo",
+        })
+        const answer = completion.choices[0].message.content
+        res.status(200).json({ answer })
+    } catch (e) {
+        res.status(e.status || 500).json({ error: e.message })
+    }
 }
 
-const summarizeController = (isPdfReturn) => async (req, res) => {
-    const { url: pageUrl } = req.body
-    if (!pageUrl) {
-        return res.status(400).json({ message: "Please specify a page URL" })
+const summarizeController = async (req, res) => {
+    const pdf = req.file
+    if (!pdf) {
+        return res.status(400).json({ message: "No file uploaded" })
+    }
+    const runScript = async () => {
+        const command = `python ./scripts/summarize.py ${pdf.originalname} ${pdf.path}`
+        const { stdout, stderr } = await exec(command)
+        if (stderr) {
+            throw new Error(stderr)
+        }
+        console.log(`stdout: ${stdout}`)
+        return stdout
     }
 
-    var fileNames = []
     try {
-        const pdfData = await getPDFs(pageUrl)
-        fileNames = await handleZip(pdfData)
-        const summaries = []
-        for (const name of fileNames) {
-            if (!name.endsWith('.pdf')) continue
-            const summary = await summarize(name, isPdfReturn)
-            const title = getTitle(name)
-            summaries.push({ title: title, content: summary })
-        }
-        if (isPdfReturn) {
-            // TODO: handle sending PDFs (send as zip?)
-        } else {
-            res.status(200).json({ summaries })
-        }
+        const scriptResult = await runScript()
+        res.status(200).json({ result: scriptResult })
     } catch (e) {
         console.error(e.message)
-        return res.status(500).send(e)
+        res.status(500).json({ error: e.message })
     } finally {
-        // Delete files files after returning - //TODO: rework if separate request for returning file names
-        fileNames.forEach((name) => {
-            deleteOriginal(name)
-            deleteSummary(name)
-        })
+        execCb("rm -f ./uploads/originalDoc.pdf") // TODO: read path from config
     }
 }
 
@@ -78,4 +78,4 @@ const findInfoController = async (req, res) => {
     }
 }
 
-export { summarizeController, findInfoController }
+export { simpleController, summarizeController, findInfoController }
