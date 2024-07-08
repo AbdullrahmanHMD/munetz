@@ -1,6 +1,7 @@
 from pathlib import Path
 import argparse
 import sys
+import json
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
@@ -64,10 +65,10 @@ def main():
         extracted_info = information_extraction_model.extract_info(documents_content=all_content, info_to_extraction=info_to_extract)
         parsed_extracted_info = parse_extracted_info(info=extracted_info, info_list=info_to_extract)
         if validate_extracted_info(extracted_info=parsed_extracted_info, information_to_extract=info_to_extract):
-            print(parsed_extracted_info)
+            print(json.dumps(parsed_extracted_info))
             return
 
-    print('{"error":"Could not extract information, please try again later"}')
+    print(json.dumps({"error":"Could not extract information, please try again later"}))
 
 if __name__=="__main__":
     main()
