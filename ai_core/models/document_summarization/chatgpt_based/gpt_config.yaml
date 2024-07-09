@@ -5,5 +5,5 @@ model_config:
   gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
 
 persona_config:
-  persona_path: C:\Users\walee\Desktop\tc24\munetz\ai_core\models\chatgpt_based_models_utils\personas\document_summarization
+  persona_path: G:\Edu\TUM_Tech_Challenge\munetz\ai_core\models\chatgpt_based_models_utils\personas\document_summarization
   persona_file_name: persona.txt
