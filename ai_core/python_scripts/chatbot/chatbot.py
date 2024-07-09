@@ -17,6 +17,7 @@ def main():
 
     args = parser.parse_args()
 
+    # TODO: Handle the case where there is no history file.
     # Querying the chatbot
     chatbot = GPTChatBotModel()
     if args.clear_history:
