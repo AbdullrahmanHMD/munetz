@@ -23,7 +23,7 @@ app.use(cors({
 
  */
 
-const allowedOrigin = 'chrome-extension://hpfgehenkhndodjplmheokafijkocnab';
+const allowedOrigin = 'chrome-extension://gnihbdpfonpecgickljoadeekbkceden';
 
 const corsOptions = {
     origin: function (origin, callback) {
