@@ -67,7 +67,8 @@ def main():
             parsed_extracted_info = parse_extracted_info(info=extracted_info, info_list=info_to_extract)
             if validate_extracted_info(extracted_info=parsed_extracted_info, information_to_extract=info_to_extract):
                 for key, val in parsed_extracted_info.items():
-                    extracted_info_dict[key].append(val)
+                    if len(extracted_info_dict[key]) <= 1 or not val.lower() == "not found":
+                        extracted_info_dict[key].append(val)
                 response_is_valid.append(True)
                 continue
 
