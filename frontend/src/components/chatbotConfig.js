@@ -7,7 +7,7 @@ import ChatbotMessage from "./ChatbotMessage";
 import CustomWidget from "./CustomWidget";
 
 const config = {
-    botName: "MuNetz",
+    botName: "Axiona",
     initialMessages: [
         createChatBotMessage("Here are some things you can ask me:", {
             widget: "options"

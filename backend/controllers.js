@@ -74,7 +74,7 @@ const findInfoController = async (req, res) => {
         return res.status(400).json({ message: "No prompt entered" })
     }
     const runScript = async () => {
-        const command = `python ./scripts/find_info.py ${pdf.originalname} ${pdf.path} ${prompt}`
+        const command = `python3 ./scripts/find_info.py ${pdf.originalname} ${pdf.path} ${prompt}`
         const { stdout, stderr } = await exec(command)
         if (stderr) {
             throw new Error(stderr)

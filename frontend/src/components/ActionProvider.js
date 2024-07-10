@@ -34,13 +34,6 @@ class ActionProvider {
                     summaries.forEach(summary => {
                         const htmlMessage = this.createChatBotMessage(
                             summary.content,  // Use summary content directly
-                            {
-                                widget: "custom",
-                                payload: {
-                                    title: summary.title,
-                                    content: summary.content
-                                }
-                            }
                         );
                         messages.push(htmlMessage);
                     });
