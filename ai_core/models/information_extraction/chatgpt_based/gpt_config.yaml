@@ -4,7 +4,6 @@ model_config:
   persona_role : system
   query_role: user
   gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
-  gpt_type: gpt-3.5-turbo # gpt-4o gpt-4
 
 persona_config:
   persona_path: C:\Users\walee\Desktop\tc24\munetz\ai_core\models\chatgpt_based_models_utils\personas\information_extraction
