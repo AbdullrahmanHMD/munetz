@@ -5,7 +5,7 @@ dotenv.config()
 const env = process.env
 // Route imports
 import routes from "./routes.js"
-
+import cors from 'cors';
 // Create Express app
 const app = express()
 
@@ -16,6 +16,29 @@ app.use((req, resp, next) => {
     console.log(req.path, req.method)
     next()
 })
+/*
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
+
+ */
+
+const allowedOrigin = 'chrome-extension://gnihbdpfonpecgickljoadeekbkceden';
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (origin === allowedOrigin || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionsSuccessStatus: 200,
+    methods: 'GET,POST,OPTIONS',
+    allowedHeaders: 'Content-Type'
+};
+
+app.use(cors(corsOptions));
 
 // register routes
 app.use("/api", routes)

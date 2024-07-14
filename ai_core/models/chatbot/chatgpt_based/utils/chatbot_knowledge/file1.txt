@@ -1,0 +1,6 @@
+Observer Ward:
+Stacks with itself and with Sentry Ward icon Sentry Wards in a single inventory slot, there is no stack limit. The sell value adapts based on the number of instances in a stack.
+Wards from multiple players are combined when given by allies.
+Observer Wards do not provide True Sight.
+Killing an Observer Ward prints out a chat notification to allies.
+An Observer Ward has no cost

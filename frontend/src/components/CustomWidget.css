@@ -1,0 +1,33 @@
+/* CustomWidget.css */
+.custom-details summary {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    outline: none;
+    margin-bottom: 5px;
+}
+
+.custom-details[open] summary {
+    background-color: #0056b3;
+}
+
+.custom-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.custom-details {
+    margin-bottom: 10px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.custom-content {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+

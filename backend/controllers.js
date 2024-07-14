@@ -2,16 +2,18 @@ import dotenv from "dotenv"
 import { handleZip } from "./utils/zipHandler.js"
 import { getPDFs } from "./utils/scrapingService.js"
 import {
+    chatbot,
     deleteOriginal,
     deleteSummary,
+    extractInfo,
     summarize,
-} from "./utils/summarizationService.js"
+} from "./utils/processingService.js"
 dotenv.config()
 
 const getTitle = (name) => {
     const parts = name.split("-")
     parts.shift()
-    return parts.join("-").replace('.pdf', '')
+    return parts.join("-").replace(".pdf", "")
 }
 
 const summarizeController = (isPdfReturn) => async (req, res) => {
@@ -20,13 +22,13 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
         return res.status(400).json({ message: "Please specify a page URL" })
     }
 
-    var fileNames = []
+    let fileNames = []
     try {
         const pdfData = await getPDFs(pageUrl)
         fileNames = await handleZip(pdfData)
         const summaries = []
         for (const name of fileNames) {
-            if (!name.endsWith('.pdf')) continue
+            if (!name.endsWith(".pdf")) continue
             const summary = await summarize(name, isPdfReturn)
             const title = getTitle(name)
             summaries.push({ title: title, content: summary })
@@ -49,33 +51,44 @@ const summarizeController = (isPdfReturn) => async (req, res) => {
 }
 
 const findInfoController = async (req, res) => {
-    const pdf = req.file
-    const prompt = req.body.prompt
-    if (!pdf) {
-        return res.status(400).json({ message: "No file uploaded" })
-    }
-    if (!prompt || !prompt.length) {
-        return res.status(400).json({ message: "No prompt entered" })
-    }
-    const runScript = async () => {
-        const command = `python ./scripts/find_info.py ${pdf.originalname} ${pdf.path} ${prompt}`
-        const { stdout, stderr } = await exec(command)
-        if (stderr) {
-            throw new Error(stderr)
-        }
-        console.log(`stdout: ${stdout}`)
-        return stdout
+    const { url: pageUrl } = req.body
+    if (!pageUrl) {
+        return res.status(400).json({ message: "Please specify a page URL" })
     }
 
+    let fileNames = []
     try {
-        const scriptResult = await runScript()
-        res.status(200).json({ result: scriptResult })
+        const pdfData = await getPDFs(pageUrl)
+        fileNames = await handleZip(pdfData)
+        const orderedFileNames = [
+            ...fileNames.filter((name) => !name.endsWith(".html")),
+            fileNames.find((name) => name.endsWith(".html")),
+        ]
+        const fileNamesInput = orderedFileNames.map((name) => `"${name}"`).join(" ")
+        console.log("input files:", fileNamesInput)
+        const extractedInfo = await extractInfo(fileNamesInput)
+        res.status(200).json(JSON.parse(extractedInfo))
     } catch (e) {
         console.error(e.message)
-        res.status(500).json({ error: e.message })
+        return res.status(500).send(e)
     } finally {
-        execCb("rm -f ./uploads/originalDoc.pdf") // TODO: read path from config
+        // Delete files files after returning - //TODO: rework if separate request for returning file names
+        fileNames.forEach((name) => {
+            deleteOriginal(name)
+            deleteSummary(name)
+        })
     }
 }
 
-export { summarizeController, findInfoController }
+const chatbotController = async (req, res) => {
+    try {
+        const {prompt} = req.body
+        const reply = await chatbot(prompt)
+        res.status(200).json({reply})
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+    
+}
+
+export { summarizeController, findInfoController, chatbotController }

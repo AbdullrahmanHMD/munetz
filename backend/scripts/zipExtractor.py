@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 # Define the relative path for the output directory
-output_directory = Path(__file__).resolve().parent.parent.parent / 'ai_core/python_scripts/document_summarization/docs'
+output_directory = Path(__file__).resolve().parent.parent.parent / 'ai_core/python_scripts/shared_docs/'
 
 # Ensure the output directory exists
 os.makedirs(output_directory, exist_ok=True)

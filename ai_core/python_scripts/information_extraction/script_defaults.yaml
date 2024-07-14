@@ -1,1 +1,10 @@
-doc_default_path: C:\Users\walee\Desktop\tc24\munetz\ai_core\python_scripts\document_summarization\docs
+doc_default_path: C:\Users\walee\Desktop\tc24\munetz\ai_core\python_scripts\shared_docs
+
+num_to_retry_prompt : 3
+
+info_to_extract:
+  - emails
+  - phone_numbers
+  - location
+  - author
+  - partners

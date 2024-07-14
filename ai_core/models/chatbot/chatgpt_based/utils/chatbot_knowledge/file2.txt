@@ -1,0 +1,5 @@
+Sentry Ward:
+Stacks with itself and with Observer Ward icon Observer Wards in the inventory, there is no stack limit. The sell value adapts based on the number of instances in a stack.
+Wards from multiple players are combined when given by allies.
+Killing a Sentry Ward prints out a chat notification to allies.
+The Sentry Ward costs 50 gold
