@@ -22,6 +22,13 @@ class ActionProvider {
         })
     }
 
+    handleMessage = (message) => {
+        const loadingMessage = this.createChatBotMessage("Processing your message...")
+        this.updateChatbotState(loadingMessage)
+        console.log("Sending message to backend:", message)
+        this.sendPostRequest("http://localhost:5000/api/chatbot", { message })
+    }
+
     sendPostRequest = async (url, data) => {
         try {
             const response = await fetch(url, {
@@ -45,6 +52,14 @@ class ActionProvider {
                             messages.push(htmlMessage)
                         })
                         return { ...prevState, messages }
+                    })
+                } else if (responseData.reply) {
+                    console.log(responseData.reply);
+                    this.setState((prevState) => {
+                        const messages = prevState.messages.slice(0, -1); // Remove the loading message
+                        const replyMessage = this.createChatBotMessage(responseData.reply);
+                        messages.push(replyMessage);
+                        return { ...prevState, messages };
                     })
                 } else {
                     this.setState((prevState) => {
