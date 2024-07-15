@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* bubble.css */
+.bubble {
+  position: fixed; 
+  bottom: 20px; 
+  right: 20px; 
+  z-index: 10001; 
+  width: 50px;  
+  height: 50px; 
+  background-color: #fff200; 
+  border-radius: 50%;  
+  cursor: pointer; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.bubble img {
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
+  display: block;
+}
+
+.chat-window {
+  position: fixed;
+  bottom: 20px;
+  right: 80px; /* Adjust based on the size of the bubble */
+  width: 320px; /* Adjust the width as needed */
+  height: 450px; /* Adjust the height as needed */
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  padding: 10px;
+  text-wrap: wrap;
+  z-index: 10000;
+  border-radius: 15px;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s;
+}
+
+.chat-window.hidden {
+  opacity: 0;
+  visibility: hidden;
+}

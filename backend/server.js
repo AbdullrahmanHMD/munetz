@@ -27,6 +27,7 @@ const allowedOrigin = 'chrome-extension://gnihbdpfonpecgickljoadeekbkceden';
 
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log(`Origin: ${origin}`);  // Log the origin for debugging
         if (origin === allowedOrigin || !origin) {
             callback(null, true);
         } else {
@@ -34,11 +35,13 @@ const corsOptions = {
         }
     },
     optionsSuccessStatus: 200,
-    methods: 'GET,POST,OPTIONS',
-    allowedHeaders: 'Content-Type'
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions)); // Preflight requests
 
 // register routes
 app.use("/api", routes)

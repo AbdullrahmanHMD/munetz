@@ -10,7 +10,7 @@ class MessageParser {
         } else if (message.includes('project')) {
             this.actionProvider.handleProjectInfo();
         } else {
-            this.actionProvider.handleDefault(message);
+            this.actionProvider.handleMessage(message);
         }
     }
 }
