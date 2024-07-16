@@ -5,7 +5,7 @@
     "description": "RIS Assistant Chatbot",
     "permissions": ["tabs", "activeTab"],
     "content_security_policy": {
-      "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://lxmzr818ca.execute-api.eu-central-1.amazonaws.com;"
+      "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://lxmzr818ca.execute-api.eu-central-1.amazonaws.com; img-src 'self' https://cdn-icons-png.flaticon.com data:;"
     },
 
     "background": {

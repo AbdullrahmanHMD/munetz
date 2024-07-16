@@ -21,6 +21,10 @@ if (window.location.hostname.includes("risi.muenchen.de")) {
         )
     }
 
+    const sendExtensionMessage = (message) => {
+        returnResponse({ type: "extension", data: message })
+    }
+
     const grabUrl = (callback) => {
         chrome.runtime.sendMessage({ action: "getURL" }, (response) => {
             let url = null
@@ -61,6 +65,7 @@ if (window.location.hostname.includes("risi.muenchen.de")) {
                 console.error("Fetch error:", error)
             }
         }
+        sendExtensionMessage("Summarizing documents...")
         grabUrl((url) => callSummarization(url))
     })
 
@@ -91,6 +96,7 @@ if (window.location.hostname.includes("risi.muenchen.de")) {
                 console.error("Fetch error:", error)
             }
         }
+        sendExtensionMessage("...")
         const msg = event.detail.message
         if (msg) callChatbot(msg)
     })
@@ -122,6 +128,7 @@ if (window.location.hostname.includes("risi.muenchen.de")) {
                 console.error("Fetch error:", error)
             }
         }
+        sendExtensionMessage("Extracting information...")
         grabUrl((url) => callInfoExtraction(url))
     })
 
@@ -130,6 +137,6 @@ if (window.location.hostname.includes("risi.muenchen.de")) {
     })
 
     const icon = document.createElement("img")
-    icon.src = "https://cdn-icons-png.flaticon.com/512/8943/8943377.png" // Replace with your actual image URL
+    icon.src = "https://gcdnb.pbrd.co/images/J6EbqP5W2JkS.png?o=1" // Replace with your actual image URL
     bubble.appendChild(icon)
 }
