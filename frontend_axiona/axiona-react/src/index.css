@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
 code {
@@ -34,6 +35,8 @@ code {
 }
 
 .chat-window {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   bottom: 20px;
   right: 80px; /* Adjust based on the size of the bubble */
@@ -42,16 +45,44 @@ code {
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  padding: 10px;
   text-wrap: wrap;
   z-index: 10000;
   border-radius: 15px;
   opacity: 1;
   visibility: visible;
   transition: all 0.3s;
+  overflow: hidden;
 }
 
 .chat-window.hidden {
   opacity: 0;
   visibility: hidden;
+}
+
+.chatbot-header {
+  display: flex;
+  height: 15%;
+  background-color: rgb(222, 222, 222);
+  margin-bottom: 6px;
+  align-items: center;
+  width: 100%;
+  padding: 4px 8px;
+}
+
+.chatbot-logo {
+  height: 60%;
+  width: auto;
+  aspect-ratio: 1;
+  background-color: #fff200;
+  border-radius: 50%;
+  padding: 8px;
+  object-fit: cover;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-left: 12px;
+  color: white;
+  font-family:  sans-serif;
 }
