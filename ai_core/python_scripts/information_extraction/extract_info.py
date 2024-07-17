@@ -3,6 +3,7 @@ import argparse
 import sys
 import yaml
 import io
+import json
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -67,7 +68,7 @@ def main():
     message = GPTPrompts.INFO_EXTRACTION.value.format(info_to_extract)
     extracted_info = info_extractor.query_model(message=message, files_to_create=file_paths)
     parsed_extracted_info = parse_extracted_info(info=extracted_info, info_list=info_to_extract)
-    print(parsed_extracted_info)
+    print(json.dumps(parsed_extracted_info))
 
     thread_handler.delete_thread(id=thread.id)
 

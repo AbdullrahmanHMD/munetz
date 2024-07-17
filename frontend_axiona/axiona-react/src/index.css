@@ -1,0 +1,199 @@
+.root {
+    --primary: #1b98d5;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Poppins", "Segoe UI",
+        "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+}
+
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 20px;
+    right: 80px; /* Adjust based on the size of the bubble */
+    width: 320px; /* Adjust the width as needed */
+    height: 450px; /* Adjust the height as needed */
+    background-color: rgb(226, 226, 226);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    text-wrap: wrap;
+    z-index: 10000;
+    border-radius: 15px;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.chat-window.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.chatbot-header {
+    display: flex;
+    height: 20%;
+    background: linear-gradient(to right, #1b98d5, #1a6dcd);
+    align-items: center;
+    padding: 4px 8px;
+    z-index: 100;
+    box-shadow: 0px 2px 4px rgba(97, 97, 97, 0.616);
+}
+
+.chatbot-logo {
+    height: 60%;
+    width: auto;
+    aspect-ratio: 1;
+    background-color: #fff200;
+    border-radius: 50%;
+    padding: 8px;
+    object-fit: cover;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 12px;
+    color: white;
+    flex-grow: 1;
+}
+
+.chatbot-content {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(226, 226, 226);
+    margin-top: auto;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+      background-color: #a3a3a3;
+      border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+      background: transparent;
+  }
+}
+
+.function-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+    min-width: 30%;
+    padding-right: 6px;
+}
+
+.function-button {
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    color: #134ba5;
+    background-color: white;
+    border: none;
+    padding: 0px 12px;
+    height: 38%;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+.function-button:hover {
+    box-shadow: 0px 1px 8px rgba(68, 68, 68, 0.727);
+}
+
+.chatbox-container {
+    display: flex;
+    height: 14%;
+    background-color: rgb(226, 226, 226);
+}
+
+.chatbox {
+    display: flex;
+    width: 100%;
+    padding: 12px 12px;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 15px 15px 0px 0px;
+}
+
+.chatbox textarea {
+    flex-grow: 1;
+    border: none;
+    font-size: 14px;
+    resize: none;
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+.chatbox textarea {
+    flex-grow: 1;
+    border: none;
+}
+
+.chatbox textarea:focus,
+.chatbox textarea:active {
+    outline: none;
+}
+
+.send-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 15px;
+    background-color: #1b98d5;
+    color: white;
+}
+
+.send-icon {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+}
+
+.message-bubble {
+    background-color: #ffffff;
+    max-width: 85%;
+    padding: 6px 16px;
+    color: #383838;
+    margin: 3px 8px;
+    margin-bottom: 6px;
+    border-radius: 0px 15px 15px 15px;
+    align-self: flex-start;
+}
+
+.message-bubble.self {
+    background-color: #1b98d5;
+    color: white;
+    align-self: flex-end;
+    border-radius: 15px 0px 15px 15px;
+}
